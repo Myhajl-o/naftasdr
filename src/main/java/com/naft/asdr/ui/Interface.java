@@ -1,20 +1,33 @@
 package com.naft.asdr.ui;
 
 import javax.swing.*;
+
+import com.naft.asdr.model.StorageData;
+
 import java.awt.*;
 import java.awt.event.*;
 
 public class Interface extends JFrame implements ActionListener {
 
   private Container c;
+
+  private StorageData data;
+  private PixelGraphRadio generPixel = new PixelGraphRadio();
+
+  private Integer db;
+
+  /* Temp */
   private JLabel name;
   private JButton setDb;
   private JTextField tDb;
-  private String Db;
   private JButton exit;
   private JTextArea tout;
 
-  public Interface() {
+  public Interface(StorageData data) {
+
+    this.data = data;
+    this.db = 0;
+
     setTitle("naftasdr");
     setBounds(300, 90, 900, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -30,36 +43,49 @@ public class Interface extends JFrame implements ActionListener {
     c.add(name);
 
     setDb = new JButton("Set Db");
+    setDb.addActionListener(this);
     setDb.setFont(new Font("Arial", Font.PLAIN, 14));
-    setDb.setLocation(300, 400);
-    setDb.setSize(100, 50);
+    setDb.setLocation(600, 450);
+    setDb.setSize(70, 40);
     c.add(setDb);
 
     tDb = new JTextField();
     tDb.setFont(new Font("Arial", Font.PLAIN, 14));
-    tDb.setSize(90, 400);
-    tDb.setLocation(200, 50);
+    tDb.setLocation(490, 450);
+    tDb.setSize(100, 30);
     c.add(tDb);
 
     exit = new JButton("Exit");
+    exit.addActionListener(this);
     exit.setFont(new Font("Arial", Font.PLAIN, 14));
-    exit.setLocation(300, 500);
-    exit.setSize(100, 50);
+    exit.setLocation(600, 500);
+    exit.setSize(70, 40);
+    c.add(exit);
 
     tout = new JTextArea();
     tout.setFont(new Font("Arial", Font.PLAIN, 14));
-    tout.setSize(300, 100);
-    tout.setLocation(50, 100);
+    tout.setSize(50, 20);
+    tout.setLocation(50, 500);
     tout.setLineWrap(true);
     tout.setEditable(false);
     c.add(tout);
 
+    setVisible(true);
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
+    if (data.getDataReady()) {
+      data.setDataReady(false);
+      generPixel.create(data.copyData(), db);
+    }
+
+    // refresh = new Timer(50, e -> refreshGraph()); // ~20 кадрів/с
+    // refresh.start();
     if (e.getSource() == setDb) {
-      Db = tDb.getText();
-      tout.setText(Db);
+      String temp = tDb.getText();
+      tout.setText(temp);
+      db = Integer.valueOf(temp);
     } else if (e.getSource() == exit) {
       System.exit(0);
     }
