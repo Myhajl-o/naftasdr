@@ -1,0 +1,13 @@
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/Main.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/connection/GetConnection.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/frequency/SetFrequency.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/model/Pixel.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/model/StorageData.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/reader/DataReader.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/reader/TransformSong.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/Interface.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/PixelGraphRadio.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/draw/DrawFrequency.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/draw/DrawPixels.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/draw/DrawSrollDb.java
+/home/misha/vscode/naftasdr/src/main/java/com/naft/asdr/ui/draw/Drawing.java
