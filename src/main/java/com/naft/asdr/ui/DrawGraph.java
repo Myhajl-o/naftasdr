@@ -2,40 +2,58 @@ package com.naft.asdr.ui;
 
 import com.naft.asdr.model.Pixel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 public class DrawGraph extends JPanel {
 
-  List<List<Pixel>> pixels = List.of();
+  private List<List<Pixel>> pixels;
   private final BufferedImage canvas;
 
   public DrawGraph(List<List<Pixel>> pixels) {
     this.pixels = pixels;
-    this.canvas = new BufferedImage();
+    int width = 1;
+    int height = 1;
+    for (List<Pixel> line : pixels) {
+      for (Pixel pixel : line) {
+        width = Math.max(width, pixel.x + 1);
+        height = Math.max(height, pixel.y + 1);
+      }
+    }
+    this.canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    setPreferredSize(new Dimension(width, height));
+    render();
+  }
+
+  public void updatePixels(List<List<Pixel>> pixels) {
+    this.pixels = pixels;
+    render();
+    repaint();
   }
 
   private void render() {
     Graphics2D g = canvas.createGraphics();
 
-    for (List<Pixel> pix : pixels) {
-      for (Pixel p : pix) {
-        g.setColor(new Color(p.r, p.g, p.b));
-        g.fillRect(p.x, p.y, 1, 1);
+    try {
+      g.setColor(getBackground());
+      g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+      for (List<Pixel> pix : pixels) {
+        for (Pixel p : pix) {
+          g.setColor(new Color(p.r, p.g, p.b));
+          g.fillRect(p.x, p.y, 1, 1);
+        }
       }
+    } finally {
+      g.dispose();
     }
-
-    g.dispose();
   }
 
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    repaint();
-    g.drawImage(canvas, 0, 0, getWidth(), getHeight(), null);
+    g.drawImage(canvas, 0, 0, getWidth(), getHeight(), this);
   }
 
 }

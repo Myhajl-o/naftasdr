@@ -1,6 +1,6 @@
 package com.naft.asdr.reader;
 
-import java.util.Scanner;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +8,8 @@ public class TransformSong {
 
   private static final Integer COUNT_FOR_COMPRESSING = 10;
 
-  private static List<Integer> compressing(List<Integer> data, int count) {
-    List<Integer> newData = new ArrayList<>();
+  private static List<Short> compressing(List<Short> data, int count) {
+    List<Short> newData = new ArrayList<>();
     for (int i = 0; i < data.size(); i += count) {
       if (data.get(i + count) == null) {
         return newData;
@@ -21,19 +21,17 @@ public class TransformSong {
       }
       avg = (float) sum / (float) count;
 
-      newData.add(Math.round(avg));
+      newData.add((short) Math.round(avg));
 
     }
     return newData;
   }
 
-  public static List<Integer> transform(String line) {
-    Scanner scanf = new Scanner(line);
-    List<Integer> data = new ArrayList<>();
-    while (scanf.hasNextInt()) {
-      data.add(scanf.nextInt());
+  public static List<Short> transform(ShortBuffer shortBuffer) {
+    List<Short> data = new ArrayList<>();
+    for (int i = 0; i < 8000 && shortBuffer.hasRemaining(); i++) {
+      data.add(shortBuffer.get());
     }
-    scanf.close();
     compressing(data, COUNT_FOR_COMPRESSING);
     return data;
   }

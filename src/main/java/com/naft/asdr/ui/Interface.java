@@ -13,8 +13,10 @@ public class Interface extends JFrame implements ActionListener {
 
   private StorageData data;
   private PixelGraphRadio generPixel = new PixelGraphRadio();
+  private final DrawGraph graph;
+  private final Timer refresh;
 
-  private Integer db;
+  private short db;
 
   /* Temp */
   private JLabel name;
@@ -26,7 +28,7 @@ public class Interface extends JFrame implements ActionListener {
   public Interface(StorageData data) {
 
     this.data = data;
-    this.db = 0;
+    this.db = 1;
 
     setTitle("naftasdr");
     setBounds(300, 90, 900, 600);
@@ -35,6 +37,10 @@ public class Interface extends JFrame implements ActionListener {
 
     c = getContentPane();
     c.setLayout(null);
+
+    graph = new DrawGraph(generPixel.getPixels());
+    graph.setBounds(40, 80, 800, 300);
+    c.add(graph);
 
     name = new JLabel("naftasdr");
     name.setFont(new Font("Arial", Font.PLAIN, 24));
@@ -50,6 +56,7 @@ public class Interface extends JFrame implements ActionListener {
     c.add(setDb);
 
     tDb = new JTextField();
+    tDb.setText(Short.toString(db));
     tDb.setFont(new Font("Arial", Font.PLAIN, 14));
     tDb.setLocation(490, 450);
     tDb.setSize(100, 30);
@@ -70,22 +77,31 @@ public class Interface extends JFrame implements ActionListener {
     tout.setEditable(false);
     c.add(tout);
 
+    refresh = new Timer(1, e -> refreshGraph());
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(WindowEvent e) {
+        refresh.stop();
+      }
+    });
     setVisible(true);
+    refresh.start();
+  }
+
+  private void refreshGraph() {
+    if (!data.getDataReady()) {
+      return;
+    }
+    generPixel.create(data.copyData(), db);
+    data.setDataReady(false);
+    graph.updatePixels(generPixel.getPixels());
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (data.getDataReady()) {
-      data.setDataReady(false);
-      generPixel.create(data.copyData(), db);
-    }
-
-    // refresh = new Timer(50, e -> refreshGraph()); // ~20 кадрів/с
-    // refresh.start();
     if (e.getSource() == setDb) {
-      String temp = tDb.getText();
-      tout.setText(temp);
-      db = Integer.valueOf(temp);
+      short db = Short.parseShort(tDb.getText().trim());
+      tout.setText(Short.toString(db));
     } else if (e.getSource() == exit) {
       System.exit(0);
     }

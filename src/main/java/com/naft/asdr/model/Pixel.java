@@ -4,11 +4,11 @@ public class Pixel {
   public int x;
   public int y;
 
-  public int r;
-  public int g;
-  public int b;
+  public short r;
+  public short g;
+  public short b;
 
-  public Pixel(int x, int y, int r, int g, int b) {
+  public Pixel(int x, int y, short r, short g, short b) {
     this.x = x;
     this.y = y;
     this.r = r;

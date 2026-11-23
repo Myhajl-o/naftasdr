@@ -5,7 +5,7 @@ import java.util.List;
 public class StorageData {
 
   private boolean dataReady;
-  private List<Integer> data;
+  private List<Short> data;
 
   public StorageData() {
     this.dataReady = false;
@@ -20,11 +20,11 @@ public class StorageData {
     return this.dataReady;
   }
 
-  public void setData(List<Integer> data) {
+  public void setData(List<Short> data) {
     this.data = data;
   }
 
-  public List<Integer> copyData() {
+  public List<Short> copyData() {
     return List.copyOf(this.data);
   }
 

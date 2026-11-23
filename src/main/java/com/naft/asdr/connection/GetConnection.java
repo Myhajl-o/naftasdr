@@ -1,26 +1,18 @@
 package com.naft.asdr.connection;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class GetConnection {
 
   private static String path = "tempStorage/data.txt";
 
-  public static BufferedReader getConnectInput() {
-    File file = new File(path);
-
-    try (BufferedReader buffer = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-
-      return buffer;
-
+  public static byte[] getConnectInput() {
+    try {
+      return Files.readAllBytes(Path.of(path));
     } catch (IOException e) {
-      e.printStackTrace();
       return null;
     }
-
   }
 }

@@ -14,11 +14,11 @@ public class PixelGraphRadio {
   private final Integer x = 100;
   private final Integer y = 200;
 
-  private final Integer max = 255;
-  private final Integer min = 0;
+  private final Short max = 255;
+  private final Short min = 0;
 
-  private final Integer maxR = 0;
-  private final Integer minR = -255;
+  private final Short maxR = 0;
+  private final Short minR = -255;
 
   public PixelGraphRadio() {
     // pixels.forEach(pixel -> pixel.forEaсh(p -> p.add(new Pixel(x + j, y - i, min,
@@ -38,18 +38,18 @@ public class PixelGraphRadio {
     return this.pixels;
   }
 
-  private int convert(int num) {
+  private short convert(short num) {
     return num - max;
   }
 
-  private int max(int a, int b) {
+  private short max(short a, short b) {
     return (a > b) ? a : b;
   }
 
-  public void create(List<Integer> data, Integer db) {
-    List<Integer> newData = new ArrayList<>();
+  public void create(List<Short> data, Short db) {
+    List<Short> newData = new ArrayList<>();
 
-    Integer coef = max / db;
+    Short coef = max / db;
 
     for (int i = 0; i < width; i++) {
       newData.add(max(convert(data.get(i)) + coef, minR));

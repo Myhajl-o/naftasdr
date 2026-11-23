@@ -3,18 +3,22 @@ package com.naft.asdr.reader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import static com.naft.asdr.reader.TransformSong.transform;
+import static com.naft.asdr.connection.GetConnection.getConnectInput;
+
 import com.naft.asdr.model.StorageData;
 
 public class DataReader extends Thread {
 
-  private BufferedReader reader;
   private StorageData storage;
-  private List<Integer> data;
+  private List<Short> data;
+  private ShortBuffer shortBuffer;
 
-  public DataReader(BufferedReader reader, StorageData storage) {
-    this.reader = reader;
+  public DataReader(StorageData storage) {
     this.storage = storage;
   }
 
@@ -24,15 +28,17 @@ public class DataReader extends Thread {
     }
   }
 
-  private String reading() throws IOException {
-    return reader.readLine();
+  private ShortBuffer reading(byte[] bytes) throws IOException {
+    return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
   }
 
   @Override
   public void run() {
     while (true) {
       try {
-        data = transform(reading());
+        shortBuffer = reading(getConnectInput());
+
+        data = transform(shortBuffer);
 
         if (!storage.getDataReady()) {
           storage.setData(data);
