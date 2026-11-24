@@ -1,2 +1,7 @@
 
-/tempStorage/data.wav
+/tempStorage
+/target
+/.settings
+.classpath
+.progect
+

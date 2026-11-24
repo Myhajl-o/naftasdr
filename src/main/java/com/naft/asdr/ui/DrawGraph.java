@@ -12,16 +12,11 @@ public class DrawGraph extends JPanel {
   private List<List<Pixel>> pixels;
   private final BufferedImage canvas;
 
+  private final Short width = 800;
+  private final Short height = 50;
+
   public DrawGraph(List<List<Pixel>> pixels) {
     this.pixels = pixels;
-    int width = 1;
-    int height = 1;
-    for (List<Pixel> line : pixels) {
-      for (Pixel pixel : line) {
-        width = Math.max(width, pixel.x + 1);
-        height = Math.max(height, pixel.y + 1);
-      }
-    }
     this.canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     setPreferredSize(new Dimension(width, height));
     render();
@@ -53,7 +48,7 @@ public class DrawGraph extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    g.drawImage(canvas, 0, 0, getWidth(), getHeight(), this);
+    g.drawImage(canvas, 0, 0, this);
   }
 
 }

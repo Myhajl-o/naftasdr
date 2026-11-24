@@ -39,7 +39,7 @@ public class Interface extends JFrame implements ActionListener {
     c.setLayout(null);
 
     graph = new DrawGraph(generPixel.getPixels());
-    graph.setBounds(40, 80, 800, 300);
+    graph.setBounds(50, 100, 800, 200);
     c.add(graph);
 
     name = new JLabel("naftasdr");
@@ -77,7 +77,7 @@ public class Interface extends JFrame implements ActionListener {
     tout.setEditable(false);
     c.add(tout);
 
-    refresh = new Timer(1, e -> refreshGraph());
+    refresh = new Timer(100, e -> refreshGraph());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent e) {
@@ -100,8 +100,8 @@ public class Interface extends JFrame implements ActionListener {
   private void checkDb(short temp) {
     if (temp > 0) {
       db = 0;
-    } else if (temp < -255) {
-      db = -255;
+    } else if (temp < -100) {
+      db = -100;
     } else {
       db = temp;
     }

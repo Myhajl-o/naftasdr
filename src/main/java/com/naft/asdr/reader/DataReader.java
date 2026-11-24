@@ -1,9 +1,6 @@
 package com.naft.asdr.reader;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -14,7 +11,6 @@ public class DataReader extends Thread {
 
   private final StorageData storage;
   private final Path path;
-  private final TransformSong transformer = new TransformSong();
 
   public DataReader(StorageData storage) {
     this(storage, GetConnection.DEFAULT_PATH);
@@ -31,18 +27,17 @@ public class DataReader extends Thread {
     }
   }
 
-  private ShortBuffer reading(byte[] bytes) {
-    return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-  }
-
   @Override
   public void run() {
-    try (GetConnection connection = new GetConnection(path)) {
-      ShortBuffer empty = ShortBuffer.allocate(0);
+    try (WavReader reader = new WavReader(path)) {
+      TransformSong transformer = new TransformSong(reader.isIq());
       while (!isInterrupted()) {
-        List<Short> data = transformer.transform(empty);
+        List<Short> data = transformer.transform(WavReader.Samples.EMPTY);
         if (data == null) {
-          data = transformer.transform(reading(connection.getConnectInput()));
+          if (reader.isFinished()) {
+            break;
+          }
+          data = transformer.transform(reader.readSamples());
         }
         if (data == null) {
           Thread.sleep(1);

@@ -1,37 +1,38 @@
 package com.naft.asdr.reader;
 
-import java.nio.ShortBuffer;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
+/** Accumulates 8000 decoded frames before producing a complete spectrum row. */
 public class TransformSong {
-
   private static final int BLOCK_SIZE = 8000;
-  private static final int COUNT_FOR_COMPRESSING = 10;
-  private final Deque<Short> tempData = new ArrayDeque<>();
+  private final double[] real = new double[BLOCK_SIZE];
+  private final double[] imaginary = new double[BLOCK_SIZE];
+  private final ArrayDeque<List<Short>> ready = new ArrayDeque<>();
+  private final boolean iq;
+  private int buffered;
 
-  // Empty input lets the caller collect a complete block already in the buffer.
-  public List<Short> transform(ShortBuffer shortBuffer) {
-    while (shortBuffer.hasRemaining()) {
-      tempData.addLast(shortBuffer.get());
-    }
-    if (tempData.size() < BLOCK_SIZE) {
-      return null;
-    }
-    return compressing();
+  public TransformSong(boolean iq) {
+    this.iq = iq;
   }
 
-  private List<Short> compressing() {
-    List<Short> result = new ArrayList<>(BLOCK_SIZE / COUNT_FOR_COMPRESSING);
-    for (int i = 0; i < BLOCK_SIZE; i += COUNT_FOR_COMPRESSING) {
-      int sum = 0;
-      for (int j = 0; j < COUNT_FOR_COMPRESSING; j++) {
-        sum += tempData.removeFirst();
-      }
-      result.add((short) Math.round((float) sum / COUNT_FOR_COMPRESSING));
+  public List<Short> transform(WavReader.Samples samples) {
+    if (samples.real().length != samples.imaginary().length) {
+      throw new IllegalArgumentException("I and Q must have the same number of samples");
     }
-    return result;
+    int offset = 0;
+    while (offset < samples.real().length) {
+      int count = Math.min(BLOCK_SIZE - buffered, samples.real().length - offset);
+      System.arraycopy(samples.real(), offset, real, buffered, count);
+      System.arraycopy(samples.imaginary(), offset, imaginary, buffered, count);
+      buffered += count;
+      offset += count;
+      if (buffered == BLOCK_SIZE) {
+        ready.addLast(Spectrum.levels(real, imaginary, iq));
+        buffered = 0;
+      }
+    }
+    // Empty input drains complete queued rows, but never publishes an incomplete block.
+    return ready.pollFirst();
   }
 }
