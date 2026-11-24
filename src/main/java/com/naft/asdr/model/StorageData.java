@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StorageData {
 
-  private boolean dataReady;
+  private volatile boolean dataReady;
   private List<Short> data;
 
   public StorageData() {

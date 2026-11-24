@@ -1,14 +1,14 @@
 package com.naft.asdr.model;
 
 public class Pixel {
-  public int x;
-  public int y;
+  public short x;
+  public short y;
 
   public short r;
   public short g;
   public short b;
 
-  public Pixel(int x, int y, short r, short g, short b) {
+  public Pixel(short x, short y, short r, short g, short b) {
     this.x = x;
     this.y = y;
     this.r = r;

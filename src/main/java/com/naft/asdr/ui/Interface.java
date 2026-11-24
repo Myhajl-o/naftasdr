@@ -28,7 +28,7 @@ public class Interface extends JFrame implements ActionListener {
   public Interface(StorageData data) {
 
     this.data = data;
-    this.db = 1;
+    this.db = 0;
 
     setTitle("naftasdr");
     setBounds(300, 90, 900, 600);
@@ -52,7 +52,7 @@ public class Interface extends JFrame implements ActionListener {
     setDb.addActionListener(this);
     setDb.setFont(new Font("Arial", Font.PLAIN, 14));
     setDb.setLocation(600, 450);
-    setDb.setSize(70, 40);
+    setDb.setSize(100, 40);
     c.add(setDb);
 
     tDb = new JTextField();
@@ -97,10 +97,22 @@ public class Interface extends JFrame implements ActionListener {
     graph.updatePixels(generPixel.getPixels());
   }
 
+  private void checkDb(short temp) {
+    if (temp > 0) {
+      db = 0;
+    } else if (temp < -255) {
+      db = -255;
+    } else {
+      db = temp;
+    }
+
+  }
+
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == setDb) {
-      short db = Short.parseShort(tDb.getText().trim());
+      short temp = Short.parseShort(tDb.getText().trim());
+      checkDb(temp);
       tout.setText(Short.toString(db));
     } else if (e.getSource() == exit) {
       System.exit(0);
